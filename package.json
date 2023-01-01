@@ -5,7 +5,7 @@
   "main": "index.js",
   "type": "module",
   "scripts": {
-    "build": "nodemon index.js"
+    "local": "nodemon index.js"
   },
   "keywords": [],
   "author": "",
@@ -17,6 +17,9 @@
     "express": "^4.17.2",
     "jsonwebtoken": "^8.5.1",
     "mongoose": "^6.1.2",
-    "nodemon": "^2.0.15"
+    "nodemon": "^2.0.15",
+    "pg": "^8.8.0",
+    "prettier": "^2.8.1",
+    "uuid": "^9.0.0"
   }
 }
