@@ -7,13 +7,24 @@ import {
   deleteProduct,
 } from '../controllers/product.js';
 import { validateAccessToken } from '../middleware/validateAccessToken.js';
+import { uploadImage } from '../middleware/uploadImage.js';
 
 const ProductRouter = express.Router();
 
 ProductRouter.get('/', getProducts);
 ProductRouter.get('/:id', getProductById);
-ProductRouter.post('/', validateAccessToken, createProduct);
-ProductRouter.put('/', validateAccessToken, updateProduct);
+ProductRouter.post(
+  '/',
+  validateAccessToken,
+  uploadImage.single('image'),
+  createProduct,
+);
+ProductRouter.put(
+  '/',
+  validateAccessToken,
+  uploadImage.single('image'),
+  updateProduct,
+);
 ProductRouter.delete('/', validateAccessToken, deleteProduct);
 
 export default ProductRouter;

@@ -14,12 +14,14 @@ clientPG.connect((err) => {
     console.log('Postgresql is connected');
   }
 });
-clientPG.query(
-  `CREATE TABLE IF NOT EXISTS products (
+clientPG
+  .query(
+    `CREATE TABLE IF NOT EXISTS products (
 		  product_id serial PRIMARY KEY,
 		  name VARCHAR (100) NOT NULL,
 		  description VARCHAR (200),
-		  price numeric NOT NULL
+		  price numeric NOT NULL,
+		  image VARCHAR (200)
 	  );
 	CREATE TABLE IF NOT EXISTS orders (
 		order_id VARCHAR (100) PRIMARY KEY,
@@ -40,14 +42,13 @@ clientPG.query(
 	  		REFERENCES products(product_id)
 	);
     `,
-  (err, res) => {
-    if (!err) console.log('CREATED TABLE SUCCESSFUL');
-  },
-);
+  )
+  .then(() => console.log('Created Table Successful'))
+  .catch((err) => console.log('Created Table Fail', err));
 
-app.use(bodyParser.urlencoded({ extended: true }));
-app.use(bodyParser.json({}));
 app.use(cors());
+app.use(bodyParser.json());
+app.use(bodyParser.urlencoded({ extended: true }));
 
 route(app);
 
