@@ -25,6 +25,6 @@ ProductRouter.put(
   uploadImage.single('image'),
   updateProduct,
 );
-ProductRouter.delete('/', validateAccessToken, deleteProduct);
+ProductRouter.post('/delete', validateAccessToken, deleteProduct);
 
 export default ProductRouter;

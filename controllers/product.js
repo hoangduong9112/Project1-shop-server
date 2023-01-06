@@ -4,10 +4,13 @@ export const getProducts = async (req, res) => {
   clientPG
     .query(`SELECT * FROM products`)
     .then((result) =>
-      res.status(200).json({ message: 'Get Successful', data: result.rows }),
+      res.status(200).json({
+        message: 'Get Successful',
+        data: result.rows.filter((row) => row.is_delete === false),
+      }),
     )
     .catch((e) =>
-      res.status(400).json({
+      res.status(500).json({
         message: 'Get Fail',
         error: e,
       }),
@@ -21,7 +24,7 @@ export const getProductById = async (req, res) => {
       res.status(200).json({ message: 'Get Successful', data: result.rows[0] }),
     )
     .catch((e) =>
-      res.status(400).json({
+      res.status(500).json({
         message: 'Get Fail',
         error: e,
       }),
@@ -43,14 +46,14 @@ export const createProduct = async (req, res) => {
     }
     clientPG
       .query(
-        `INSERT INTO products (name, description, price, image) VALUES ($1, $2, $3, $4)`,
+        `INSERT INTO products (name, description, price, image, is_delete) VALUES ($1, $2, $3, $4, false)`,
         [req.body.name, req.body.description, req.body.price, data.Location],
       )
       .then(() => {
         res.status(200).json({ message: 'Create Successful' });
       })
       .catch((e) =>
-        res.status(400).json({
+        res.status(500).json({
           message: 'Create Fail',
           error: e,
         }),
@@ -83,7 +86,7 @@ export const updateProduct = async (req, res) => {
       )
       .then(() => res.status(200).json({ message: 'Update Successful' }))
       .catch((e) =>
-        res.status(400).json({
+        res.status(500).json({
           message: 'Update Fail',
           error: e,
         }),
@@ -94,12 +97,13 @@ export const updateProduct = async (req, res) => {
 export const deleteProduct = async (req, res) => {
   clientPG
     .query(
-      `DELETE FROM products
-      WHERE product_id = ${req.body.product_id};`,
+      `UPDATE products
+    SET is_delete = true
+    WHERE product_id = ${req.body.product_id};`,
     )
     .then(() => res.status(200).json({ message: 'Delete Successful' }))
     .catch((e) =>
-      res.status(400).json({
+      res.status(500).json({
         message: 'Delete Fail',
         error: e,
       }),

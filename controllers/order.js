@@ -6,8 +6,14 @@ export const createOrder = async (req, res) => {
   const orderId = uuidv4().toString();
   clientPG
     .query(
-      `INSERT INTO orders (order_id, user_name, phone, address) VALUES ($1, $2, $3, $4)`,
-      [orderId, req.body.user_name, req.body.phone, req.body.address],
+      `INSERT INTO orders (order_id, user_name, phone, address, created_at) VALUES ($1, $2, $3, $4, $5)`,
+      [
+        orderId,
+        req.body.user_name,
+        req.body.phone,
+        req.body.address,
+        new Date(),
+      ],
     )
     .then(() => {
       req.body.packages.forEach(async (pack) => {
@@ -19,7 +25,7 @@ export const createOrder = async (req, res) => {
     })
     .then(() => res.status(200).json({ message: 'Create Successful' }))
     .catch((e) =>
-      res.status(400).json({
+      res.status(500).json({
         message: 'Create Fail',
         error: e,
       }),
@@ -50,10 +56,10 @@ export const getOrderList = async (req, res) => {
         } else {
           orderList.push({
             order_id: row.order_id,
+            created_at: row.created_at,
             user_name: row.user_name,
             phone: row.phone,
             address: row.address,
-            package_id: row.package_id,
             products: [
               {
                 product_id: row.product_id,
@@ -71,7 +77,7 @@ export const getOrderList = async (req, res) => {
         .json({ message: 'Get Order Successful', data: orderList });
     })
     .catch((e) =>
-      res.status(400).json({
+      res.status(500).json({
         message: 'Get Order Fail',
         error: e,
       }),

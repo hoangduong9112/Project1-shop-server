@@ -21,13 +21,15 @@ clientPG
 		  name VARCHAR (100) NOT NULL,
 		  description VARCHAR (200),
 		  price numeric NOT NULL,
-		  image VARCHAR (200)
+		  image VARCHAR (200),
+		  is_delete BOOLEAN
 	  );
 	CREATE TABLE IF NOT EXISTS orders (
 		order_id VARCHAR (100) PRIMARY KEY,
 		user_name VARCHAR (100) NOT NULL,
 		phone VARCHAR (50) NOT NULL,
-		address VARCHAR (300) NOT NULL
+		address VARCHAR (300) NOT NULL,
+		created_at TIMESTAMP
 	);
 	CREATE TABLE IF NOT EXISTS packages (
 		package_id serial PRIMARY KEY,
@@ -49,6 +51,8 @@ clientPG
 app.use(cors());
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: true }));
+app.use(express.json({ limit: '10mb' }));
+app.use(express.urlencoded({ limit: '10mb' }));
 
 route(app);
 
