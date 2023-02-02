@@ -1,6 +1,7 @@
 import { v4 as uuidv4 } from 'uuid';
 import findIndex from 'lodash/findIndex.js';
 import { clientPG } from '../database.js';
+import { sns } from '../database.js';
 
 export const createOrder = async (req, res) => {
   const orderId = uuidv4().toString();
@@ -23,13 +24,21 @@ export const createOrder = async (req, res) => {
         );
       });
     })
-    .then(() => res.status(200).json({ message: 'Create Successful' }))
-    .catch((e) =>
+    .then(() => {
+      const params = {
+        Message: `You have a new order from ${req.body.user_name}` /* required */,
+        TopicArn: process.env.AWS_TOPIC_ARN,
+      };
+
+      sns.publish(params, () => {});
+      res.status(200).json({ message: 'Create Successful' });
+    })
+    .catch((e) => {
       res.status(500).json({
         message: 'Create Fail',
         error: e,
-      }),
-    );
+      });
+    });
 };
 
 export const getOrderList = async (req, res) => {
